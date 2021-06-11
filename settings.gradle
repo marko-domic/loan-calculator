@@ -1,0 +1,9 @@
+pluginManagement {
+    plugins {
+        id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+        id 'org.springframework.boot' version spring_boot_version
+    }
+}
+
+rootProject.name = 'loancalculator'
+include 'server', 'interface'
