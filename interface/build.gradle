@@ -1,5 +1,6 @@
 plugins {
 	id 'java-library'
+	id 'io.freefair.lombok'
 }
 
 configurations {
@@ -7,6 +8,8 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation "org.springframework.boot:spring-boot-starter-web:${spring_boot_version}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test:${spring_boot_version}"
 }
+
+compileJava.options.encoding = 'UTF-8'
