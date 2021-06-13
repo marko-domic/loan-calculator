@@ -18,3 +18,10 @@ spring:
       ddl-auto: validate
     open-in-view: false
     show-sql: false
+
+calculator:
+  rounding:
+    calculation:
+      scale: 30
+    display:
+      scale: 2
