@@ -8,6 +8,10 @@ import com.leanpay.loancalculator.dto.AmortizationScheduleCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationInputDto;
 import com.leanpay.loancalculator.dto.PaymentDto;
+import com.leanpay.loancalculator.model.LoanCalculation;
+import com.leanpay.loancalculator.model.Payment;
+import com.leanpay.loancalculator.repository.LoanCalculationRepository;
+import com.leanpay.loancalculator.repository.PaymentRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -26,6 +30,12 @@ import org.springframework.http.ResponseEntity;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Tag("integration")
 public class LoanCalculatorEndToEndTest {
+
+  @Autowired
+  private LoanCalculationRepository loanCalculationRepository;
+
+  @Autowired
+  private PaymentRepository paymentRepository;
 
   @Test
   void testLoanCalculation(@Autowired TestRestTemplate restTemplate) {
@@ -47,10 +57,26 @@ public class LoanCalculatorEndToEndTest {
 
     // Assertions
     assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    final LoanCalculationDto loanCalculation = responseEntity.getBody();
+
+    final LoanCalculationDto loanCalculationDto = responseEntity.getBody();
+    assertNotNull(loanCalculationDto);
+    assertEquals(BigDecimal.valueOf(377.42), loanCalculationDto.getMonthlyPayment());
+    assertEquals(BigDecimal.valueOf(2645.52), loanCalculationDto.getTotalInterestPaid());
+
+    final LoanCalculation loanCalculation = loanCalculationRepository
+        .findFirstByAmountAndAndAnnualInterestPercentAndNumberOfMonths(20000, 5, 60);
     assertNotNull(loanCalculation);
-    assertEquals(BigDecimal.valueOf(377.42), loanCalculation.getMonthlyPayment());
-    assertEquals(BigDecimal.valueOf(2645.52), loanCalculation.getTotalInterestPaid());
+    assertEquals(Double.valueOf(20000), loanCalculation.getAmount());
+    assertEquals(Double.valueOf(5), loanCalculation.getAnnualInterestPercent());
+    assertEquals(Integer.valueOf(60), loanCalculation.getNumberOfMonths());
+    assertEquals(Double.valueOf(377.42), loanCalculation.getMonthlyPayment());
+    assertEquals(Double.valueOf(2645.52), loanCalculation.getTotalInterestPaid());
+
+    final List<Payment> payments = paymentRepository
+        .findByCalculationOrderByPaymentOrder(loanCalculation);
+    assertNotNull(payments);
+    assertFalse(payments.isEmpty());
+    assertEquals(60, payments.size());
   }
 
   @Test
@@ -80,29 +106,65 @@ public class LoanCalculatorEndToEndTest {
     assertEquals(BigDecimal.valueOf(23.06), amortizationScheduleCalculation.getTotalInterestPaid());
     assertFalse(amortizationScheduleCalculation.getPayments().isEmpty());
     assertEquals(10, amortizationScheduleCalculation.getPayments().size());
-    final List<PaymentDto> payments = amortizationScheduleCalculation.getPayments();
-    validatePayment(payments.get(0), 1, 102.31, 98.14, 4.17, 901.86);
-    validatePayment(payments.get(1), 2, 102.31, 98.55, 3.76, 803.31);
-    validatePayment(payments.get(2), 3, 102.31, 98.96, 3.35, 704.35);
-    validatePayment(payments.get(3), 4, 102.31, 99.38, 2.93, 604.97);
-    validatePayment(payments.get(4), 5, 102.31, 99.79, 2.52, 505.18);
-    validatePayment(payments.get(5), 6, 102.31, 100.21, 2.10, 404.97);
-    validatePayment(payments.get(6), 7, 102.31, 100.62, 1.69, 304.35);
-    validatePayment(payments.get(7), 8, 102.31, 101.04, 1.27, 203.31);
-    validatePayment(payments.get(8), 9, 102.31, 101.46, 0.85, 101.85);
-    validatePayment(payments.get(9), 10, 102.27, 101.85, 0.42, 0);
+
+    final LoanCalculation loanCalculation = loanCalculationRepository
+        .findFirstByAmountAndAndAnnualInterestPercentAndNumberOfMonths(1000, 5, 10);
+    assertNotNull(loanCalculation);
+    assertEquals(Double.valueOf(1000), loanCalculation.getAmount());
+    assertEquals(Double.valueOf(5), loanCalculation.getAnnualInterestPercent());
+    assertEquals(Integer.valueOf(10), loanCalculation.getNumberOfMonths());
+    assertEquals(Double.valueOf(102.31), loanCalculation.getMonthlyPayment());
+    assertEquals(Double.valueOf(23.06), loanCalculation.getTotalInterestPaid());
+
+    final List<Payment> payments = paymentRepository
+        .findByCalculationOrderByPaymentOrder(loanCalculation);
+    assertNotNull(payments);
+    assertFalse(payments.isEmpty());
+    assertEquals(10, payments.size());
+
+    final List<PaymentDto> paymentDtoList = amortizationScheduleCalculation.getPayments();
+    validatePayment(paymentDtoList.get(0), payments.get(0), 1, 102.31, 98.14, 4.17, 901.86);
+    validatePayment(paymentDtoList.get(1), payments.get(1), 2, 102.31, 98.55, 3.76, 803.31);
+    validatePayment(paymentDtoList.get(2), payments.get(2), 3, 102.31, 98.96, 3.35, 704.35);
+    validatePayment(paymentDtoList.get(3), payments.get(3), 4, 102.31, 99.38, 2.93, 604.97);
+    validatePayment(paymentDtoList.get(4), payments.get(4), 5, 102.31, 99.79, 2.52, 505.18);
+    validatePayment(paymentDtoList.get(5), payments.get(5), 6, 102.31, 100.21, 2.10, 404.97);
+    validatePayment(paymentDtoList.get(6), payments.get(6), 7, 102.31, 100.62, 1.69, 304.35);
+    validatePayment(paymentDtoList.get(7), payments.get(7), 8, 102.31, 101.04, 1.27, 203.31);
+    validatePayment(paymentDtoList.get(8), payments.get(8), 9, 102.31, 101.46, 0.85, 101.85);
+    validatePayment(paymentDtoList.get(9), payments.get(9), 10, 102.27, 101.85, 0.42, 0);
   }
 
-  private void validatePayment(PaymentDto payment, int expectedOrder, double expectedPaymentAmount,
-      double expectedPrincipalAmount, double expectedInterestAmount, double expectedBalanceOwed) {
-    assertEquals(expectedOrder, payment.getPaymentOrder());
+  private void validatePayment(PaymentDto paymentDto, Payment payment, int expectedOrder,
+      double expectedPaymentAmount, double expectedPrincipalAmount, double expectedInterestAmount,
+      double expectedBalanceOwed) {
+    validatePaymentDto(paymentDto, expectedOrder, expectedPaymentAmount, expectedPrincipalAmount,
+        expectedInterestAmount, expectedBalanceOwed);
+    validatePaymentModel(payment, expectedOrder, expectedPaymentAmount, expectedPrincipalAmount,
+        expectedInterestAmount, expectedBalanceOwed);
+  }
+
+  private void validatePaymentDto(PaymentDto paymentDto, int expectedOrder,
+      double expectedPaymentAmount, double expectedPrincipalAmount, double expectedInterestAmount,
+      double expectedBalanceOwed) {
+    assertEquals(expectedOrder, paymentDto.getPaymentOrder());
     assertEquals(BigDecimal.valueOf(expectedPaymentAmount).setScale(2, RoundingMode.HALF_EVEN),
-        payment.getPaymentAmount());
+        paymentDto.getPaymentAmount());
     assertEquals(BigDecimal.valueOf(expectedPrincipalAmount).setScale(2, RoundingMode.HALF_EVEN),
-        payment.getPrincipalAmount());
+        paymentDto.getPrincipalAmount());
     assertEquals(BigDecimal.valueOf(expectedInterestAmount).setScale(2, RoundingMode.HALF_EVEN),
-        payment.getInterestAmount());
+        paymentDto.getInterestAmount());
     assertEquals(BigDecimal.valueOf(expectedBalanceOwed).setScale(2, RoundingMode.HALF_EVEN),
-        payment.getBalanceOwed());
+        paymentDto.getBalanceOwed());
+  }
+
+  private void validatePaymentModel(Payment payment, int expectedOrder,
+      double expectedPaymentAmount, double expectedPrincipalAmount, double expectedInterestAmount,
+      double expectedBalanceOwed) {
+    assertEquals(expectedOrder, payment.getPaymentOrder());
+    assertEquals(Double.valueOf(expectedPaymentAmount), payment.getPaymentAmount());
+    assertEquals(Double.valueOf(expectedPrincipalAmount), payment.getPrincipalAmount());
+    assertEquals(Double.valueOf(expectedInterestAmount), payment.getInterestAmount());
+    assertEquals(Double.valueOf(expectedBalanceOwed), payment.getBalanceOwed());
   }
 }
