@@ -1,15 +1,18 @@
 package com.leanpay.loancalculator.calculator;
 
+import com.leanpay.loancalculator.converter.LoanCalculationConverter;
 import com.leanpay.loancalculator.dto.AmortizationScheduleCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationInputDto;
 import com.leanpay.loancalculator.dto.PaymentDto;
+import com.leanpay.loancalculator.service.LoanCalculationService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,23 +25,36 @@ public class LoanCalculator {
 
   private final int calculationScale;
   private final int displayScale;
+  private final LoanCalculationService loanCalculationService;
+  private final LoanCalculationConverter loanCalculationConverter;
 
+  @Autowired
   public LoanCalculator(@Value("${calculator.rounding.calculation.scale}") int calculationScale,
-      @Value("${calculator.rounding.display.scale}") int displayScale) {
+      @Value("${calculator.rounding.display.scale}") int displayScale,
+      LoanCalculationService loanCalculationService,
+      LoanCalculationConverter loanCalculationConverter) {
     this.calculationScale = calculationScale;
     this.displayScale = displayScale;
+    this.loanCalculationService = loanCalculationService;
+    this.loanCalculationConverter = loanCalculationConverter;
   }
 
-  public LoanCalculationDto calculateLoan(LoanCalculationInputDto loanCalculationInputDto) {
+  public LoanCalculationDto calculateLoan(LoanCalculationInputDto loanCalculationInput) {
     final AmortizationScheduleCalculationDto loanCalculation = calculateLoanDetails(
-        loanCalculationInputDto);
+        loanCalculationInput);
+    loanCalculationService.saveLoanCalculation(
+        loanCalculationConverter.toModel(loanCalculationInput, loanCalculation));
     return new LoanCalculationDto(loanCalculation.getMonthlyPayment(),
         loanCalculation.getTotalInterestPaid());
   }
 
   public AmortizationScheduleCalculationDto calculateLoanWithAmortizationSchedule(
-      LoanCalculationInputDto loanCalculationInputDto) {
-    return calculateLoanDetails(loanCalculationInputDto);
+      LoanCalculationInputDto loanCalculationInput) {
+    final AmortizationScheduleCalculationDto loanCalculation = calculateLoanDetails(
+        loanCalculationInput);
+    loanCalculationService.saveLoanCalculation(
+        loanCalculationConverter.toModel(loanCalculationInput, loanCalculation));
+    return loanCalculation;
   }
 
   private AmortizationScheduleCalculationDto calculateLoanDetails(

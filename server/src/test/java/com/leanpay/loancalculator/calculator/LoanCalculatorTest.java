@@ -4,27 +4,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.leanpay.loancalculator.converter.LoanCalculationConverter;
 import com.leanpay.loancalculator.dto.AmortizationScheduleCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationInputDto;
 import com.leanpay.loancalculator.dto.PaymentDto;
+import com.leanpay.loancalculator.service.LoanCalculationService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class LoanCalculatorTest {
+
+  private static final int CALCULATION_SCALE = 30;
+  private static final int DISPLAY_SCALE = 2;
+
+  @Mock
+  private LoanCalculationService loanCalculationService;
+
+  @Mock
+  private LoanCalculationConverter loanCalculationConverter;
 
   private LoanCalculator loanCalculator;
 
   @BeforeEach
   void setup() {
-    loanCalculator = new LoanCalculator(30, 2);
+    loanCalculator = new LoanCalculator(CALCULATION_SCALE, DISPLAY_SCALE, loanCalculationService,
+        loanCalculationConverter);
   }
 
   @ParameterizedTest
