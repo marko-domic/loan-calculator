@@ -3,16 +3,26 @@ plugins {
 	id 'io.spring.dependency-management'
 	id 'java'
 	id 'io.freefair.lombok'
+	id 'idea'
 }
 
 group = 'com.leanpay'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+sourceSets {
+	integrationTest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
 	}
+}
+
+configurations {
+	compileOnly.extendsFrom annotationProcessor
+	integrationTestImplementation.extendsFrom implementation
+	integrationTestRuntimOnly.extendsFrom runtimeOnly
+	integrationTestCompileOnly.extendsFrom compileOnly
+	integrationTestAnnotationProcessor.extendsFrom annotationProcessor
 }
 
 repositories {
@@ -28,8 +38,31 @@ dependencies {
 	implementation 'com.h2database:h2:1.4.200'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
 	useJUnitPlatform()
+}
+
+task integrationTest(type: Test) {
+	description = 'Runs integration tests'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+
+	useJUnitPlatform {
+		includeTags 'integration'
+	}
+	shouldRunAfter test
+}
+
+check.dependsOn integrationTest
+
+idea {
+	module {
+		testSourceDirs += project.sourceSets.integrationTest.java.srcDirs
+		testSourceDirs += project.sourceSets.integrationTest.resources.srcDirs
+	}
 }

@@ -1,9 +1,15 @@
 package com.leanpay.loancalculator.dto;
 
 import java.math.BigDecimal;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoanCalculationDto {
 
   BigDecimal monthlyPayment;
