@@ -3,12 +3,18 @@ package com.leanpay.loancalculator.calculator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 import com.leanpay.loancalculator.converter.LoanCalculationConverter;
 import com.leanpay.loancalculator.dto.AmortizationScheduleCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationDto;
 import com.leanpay.loancalculator.dto.LoanCalculationInputDto;
 import com.leanpay.loancalculator.dto.PaymentDto;
+import com.leanpay.loancalculator.model.LoanCalculation;
 import com.leanpay.loancalculator.service.LoanCalculationService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,7 +51,7 @@ public class LoanCalculatorTest {
 
   @ParameterizedTest
   @MethodSource("calculateLoanTestParameters")
-  void testCalculateLoan(int amount, double interestRate, int numOfMonths,
+  void testCalculateLoan(double amount, double interestRate, int numOfMonths,
       double expectedMonthlyPayment, double expectedTotalInterest) {
 
     // Given
@@ -54,6 +60,16 @@ public class LoanCalculatorTest {
         .annualInterestPercent(BigDecimal.valueOf(interestRate))
         .numberOfMonths(numOfMonths)
         .build();
+    final LoanCalculation loanCalculationModel = LoanCalculation.builder()
+        .amount(amount)
+        .annualInterestPercent(interestRate)
+        .numberOfMonths(numOfMonths)
+        .build();
+
+    // Mocks
+    doReturn(loanCalculationModel).when(loanCalculationConverter)
+        .toModel(eq(loanCalculationInput), any(AmortizationScheduleCalculationDto.class));
+    doNothing().when(loanCalculationService).saveLoanCalculation(eq(loanCalculationModel));
 
     // Action
     final LoanCalculationDto loanCalculation = loanCalculator.calculateLoan(loanCalculationInput);
@@ -62,6 +78,9 @@ public class LoanCalculatorTest {
     assertNotNull(loanCalculation);
     assertEquals(BigDecimal.valueOf(expectedMonthlyPayment), loanCalculation.getMonthlyPayment());
     assertEquals(BigDecimal.valueOf(expectedTotalInterest), loanCalculation.getTotalInterestPaid());
+    verify(loanCalculationConverter)
+        .toModel(eq(loanCalculationInput), any(AmortizationScheduleCalculationDto.class));
+    verify(loanCalculationService).saveLoanCalculation(eq(loanCalculationModel));
   }
 
   @Test
@@ -73,6 +92,16 @@ public class LoanCalculatorTest {
         .annualInterestPercent(BigDecimal.valueOf(5))
         .numberOfMonths(10)
         .build();
+    final LoanCalculation loanCalculationModel = LoanCalculation.builder()
+        .amount(1000.0)
+        .annualInterestPercent(5.0)
+        .numberOfMonths(10)
+        .build();
+
+    // Mocks
+    doReturn(loanCalculationModel).when(loanCalculationConverter)
+        .toModel(eq(loanCalculationInput), any(AmortizationScheduleCalculationDto.class));
+    doNothing().when(loanCalculationService).saveLoanCalculation(eq(loanCalculationModel));
 
     // Action
     final AmortizationScheduleCalculationDto amortizationScheduleCalculation = loanCalculator
@@ -95,6 +124,9 @@ public class LoanCalculatorTest {
     validatePayment(payments.get(7), 8, 102.31, 101.04, 1.27, 203.31);
     validatePayment(payments.get(8), 9, 102.31, 101.46, 0.85, 101.85);
     validatePayment(payments.get(9), 10, 102.27, 101.85, 0.42, 0);
+    verify(loanCalculationConverter)
+        .toModel(eq(loanCalculationInput), any(AmortizationScheduleCalculationDto.class));
+    verify(loanCalculationService).saveLoanCalculation(eq(loanCalculationModel));
   }
 
   private void validatePayment(PaymentDto payment, int expectedOrder, double expectedPaymentAmount,

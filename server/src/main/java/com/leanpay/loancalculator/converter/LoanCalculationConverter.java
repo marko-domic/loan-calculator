@@ -7,9 +7,7 @@ import com.leanpay.loancalculator.model.LoanCalculation;
 import com.leanpay.loancalculator.model.Payment;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 

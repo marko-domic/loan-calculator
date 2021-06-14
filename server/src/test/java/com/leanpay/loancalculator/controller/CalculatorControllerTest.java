@@ -110,10 +110,8 @@ public class CalculatorControllerTest {
 
     // Assertion
     assertNotNull(amortizationScheduleCalculationResult);
-    assertEquals(amortizationScheduleCalculationResult.getMonthlyPayment(),
-        BigDecimal.valueOf(10062.54));
-    assertEquals(amortizationScheduleCalculationResult.getTotalInterestPaid(),
-        BigDecimal.valueOf(125.08));
+    assertEquals(BigDecimal.valueOf(10062.54), amortizationScheduleCalculationResult.getMonthlyPayment());
+    assertEquals(BigDecimal.valueOf(125.08), amortizationScheduleCalculationResult.getTotalInterestPaid());
     assertFalse(amortizationScheduleCalculationResult.getPayments().isEmpty());
     assertEquals(2, amortizationScheduleCalculationResult.getPayments().size());
 
