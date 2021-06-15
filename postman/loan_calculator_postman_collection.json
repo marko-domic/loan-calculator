@@ -1,0 +1,293 @@
+{
+	"info": {
+		"_postman_id": "262a62ce-9c5e-4e85-8864-a696c8aec329",
+		"name": "Loan Calculator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Loan Calculation 20k / 5% / 60 months",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 20000,\r\n    \"annualInterestPercent\": 5,\r\n    \"numberOfMonths\": 60 \r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/loan-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"loan-calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Amortization Schedule Calculation 20k / 5% / 60 months",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 20000,\r\n    \"annualInterestPercent\": 5,\r\n    \"numberOfMonths\": 60\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/amortization-schedule-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"amortization-schedule-calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Loan Calculation 1k / 5% / 10 months",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 1000,\r\n    \"annualInterestPercent\": 5,\r\n    \"numberOfMonths\": 10 \r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/loan-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"loan-calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Amortization Schedule Calculation 1k / 5% / 10 months",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 1000,\r\n    \"annualInterestPercent\": 5,\r\n    \"numberOfMonths\": 10\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/amortization-schedule-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"amortization-schedule-calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Loan Calculation 30k / 8.4% / 72 months",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 30000,\r\n    \"annualInterestPercent\": 8.4,\r\n    \"numberOfMonths\": 72 \r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/loan-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"loan-calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Amortization Schedule Calculation 30k / 8.4% / 72 months",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 30000,\r\n    \"annualInterestPercent\": 8.4,\r\n    \"numberOfMonths\": 72\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/amortization-schedule-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"amortization-schedule-calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Loan Calculation 5k / 0% / 10 months",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 5000,\r\n    \"annualInterestPercent\": 0,\r\n    \"numberOfMonths\": 10 \r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/loan-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"loan-calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Amortization Schedule Calculation 5k / 0% / 10 months",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 5000,\r\n    \"annualInterestPercent\": 0,\r\n    \"numberOfMonths\": 10\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/calculator/amortization-schedule-calculation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"calculator",
+						"amortization-schedule-calculation"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

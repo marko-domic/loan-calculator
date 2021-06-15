@@ -4,6 +4,90 @@ This amortization schedule calculator creates a payment schedule for a loan with
 for the life of a loan. The amortization table shows how each payment is applied to the principal 
 balance and the interest owed.
 
+## API
+
+The REST API to the loan calculator app can be described in these 2 requests:
+
+### Generate basic loan calculation
+
+#### Path
+
+`POST /calculator/loan-calculation`
+
+#### Request body
+
+```json
+{
+    "amount": 1000,
+    "annualInterestPercent": 5,
+    "numberOfMonths": 10 
+}
+```
+
+#### Response body
+
+```json
+{
+    "monthlyPayment": 102.31,
+    "totalInterestPaid": 23.06
+}
+```
+
+### Generate amortization schedule calculation
+
+#### Path
+
+`POST /calculator/amortization-schedule-calculation`
+
+#### Request body
+
+```json
+{
+  "amount": 1000,
+  "annualInterestPercent": 7.1,
+  "numberOfMonths": 3
+}
+```
+
+#### Response body
+
+```json
+{
+  "monthlyPayment": 337.29,
+  "totalInterestPaid": 11.86,
+  "payments": [
+    {
+      "paymentOrder": 1,
+      "paymentAmount": 337.29,
+      "principalAmount": 331.37,
+      "interestAmount": 5.92,
+      "balanceOwed": 668.63
+    },
+    {
+      "paymentOrder": 2,
+      "paymentAmount": 337.29,
+      "principalAmount": 333.33,
+      "interestAmount": 3.96,
+      "balanceOwed": 335.30
+    },
+    {
+      "paymentOrder": 3,
+      "paymentAmount": 337.28,
+      "principalAmount": 335.30,
+      "interestAmount": 1.98,
+      "balanceOwed": 0.00
+    }
+  ]
+}
+```
+
+### Postman collection requests
+
+More examples regarding loan calculator API request can be found as Postman collection:
+
+* [Postman collection JSON link](https://www.getpostman.com/collections/b9c83a95523598f825b0)
+* [loan_calculator_postman_collection.json](postman/loan_calculator_postman_collection.json)
+
 ## Running the application locally
 
 There are several ways to start a service on your local machine.
