@@ -7,7 +7,6 @@ spring:
       auto-commit: false
       pool-name: loan-calculator-db-pool
       maximum-pool-size: 2
-    driverClassName: org.h2.Driver
   jpa:
     properties:
       hibernate:
