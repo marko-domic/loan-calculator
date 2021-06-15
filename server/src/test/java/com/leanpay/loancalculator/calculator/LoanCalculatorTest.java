@@ -76,8 +76,10 @@ public class LoanCalculatorTest {
 
     // Assertion
     assertNotNull(loanCalculation);
-    assertEquals(BigDecimal.valueOf(expectedMonthlyPayment), loanCalculation.getMonthlyPayment());
-    assertEquals(BigDecimal.valueOf(expectedTotalInterest), loanCalculation.getTotalInterestPaid());
+    assertEquals(BigDecimal.valueOf(expectedMonthlyPayment).setScale(2, RoundingMode.HALF_EVEN),
+        loanCalculation.getMonthlyPayment());
+    assertEquals(BigDecimal.valueOf(expectedTotalInterest).setScale(2, RoundingMode.HALF_EVEN),
+        loanCalculation.getTotalInterestPaid());
     verify(loanCalculationConverter)
         .toModel(eq(loanCalculationInput), any(AmortizationScheduleCalculationDto.class));
     verify(loanCalculationService).saveLoanCalculation(eq(loanCalculationModel));
@@ -147,7 +149,9 @@ public class LoanCalculatorTest {
         Arguments.of(20000, 5, 60, 377.42, 2645.52),
         Arguments.of(1000, 5, 10, 102.31, 23.06),
         Arguments.of(30000, 8.4, 72, 531.88, 8294.97),
-        Arguments.of(20000, 5, 2, 10062.54, 125.08)
+        Arguments.of(20000, 5, 2, 10062.54, 125.08),
+        Arguments.of(5000, 0, 1, 5000.00, 0.00),
+        Arguments.of(8000, 0, 10, 800.00, 0.00)
     );
   }
 }

@@ -60,10 +60,14 @@ public class LoanCalculator {
   private AmortizationScheduleCalculationDto calculateLoanDetails(
       LoanCalculationInputDto loanCalculationInputDto) {
 
+    final BigDecimal amount = loanCalculationInputDto.getAmount();
+    final BigDecimal interestRate = loanCalculationInputDto.getAnnualInterestPercent();
     final int numberOfMonths = loanCalculationInputDto.getNumberOfMonths();
     final List<PaymentDto> payments = new ArrayList<>(numberOfMonths);
 
-    final BigDecimal monthlyPayment = calculateMonthlyPayment(loanCalculationInputDto);
+    final BigDecimal monthlyPayment = BigDecimal.ZERO.compareTo(interestRate) == 0 ?
+        amount.divide(BigDecimal.valueOf(numberOfMonths), displayScale, RoundingMode.HALF_DOWN) :
+        calculateMonthlyPayment(loanCalculationInputDto);
     log.info("Monthly payment calculated: {}", monthlyPayment);
 
     IntStream.range(0, numberOfMonths).forEach(monthIndex -> payments.add(
