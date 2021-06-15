@@ -1,0 +1,42 @@
+version: '3.8'
+
+volumes:
+  mysql_data:
+
+services:
+  loan-calculator:
+    image: 'loan-calculator:latest'
+    container_name: loan-calculator
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DB_URL=jdbc:mysql://mysql:3306/calculator
+      - DB_USERNAME=loan-calculator-mysql-user
+      - DB_PASSWORD=loan-calculator-mysql-password
+      - SCHEMA_NAME=calculator
+      - SPRING_FLYWAY_SCHEMAS=calculator
+
+  mysql:
+    image: 'mysql:8.0'
+    container_name: mysql
+    ports:
+      - 3308:3306
+    expose:
+      - 3306
+    environment:
+      - MYSQL_DATABASE=calculator
+      - MYSQL_USER=loan-calculator-mysql-user
+      - MYSQL_PASSWORD=loan-calculator-mysql-password
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 3s
+      timeout: 2s
+      retries: 10

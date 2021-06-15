@@ -53,17 +53,17 @@ public class LoanCalculationServiceTest {
         .build();
 
     // Mocks
-    doReturn(loanCalculation).when(loanCalculationRepository).save(eq(loanCalculation));
-    doReturn(payment1).when(paymentRepository).save(eq(payment1));
-    doReturn(payment2).when(paymentRepository).save(eq(payment2));
+    doReturn(loanCalculation).when(loanCalculationRepository).saveAndFlush(eq(loanCalculation));
+    doReturn(payment1).when(paymentRepository).saveAndFlush(eq(payment1));
+    doReturn(payment2).when(paymentRepository).saveAndFlush(eq(payment2));
 
     // Action
     loanCalculationService.saveLoanCalculation(loanCalculation);
 
     // Assertion
-    verify(loanCalculationRepository).save(eq(loanCalculation));
-    verify(paymentRepository).save(eq(payment1));
-    verify(paymentRepository).save(eq(payment2));
+    verify(loanCalculationRepository).saveAndFlush(eq(loanCalculation));
+    verify(paymentRepository).saveAndFlush(eq(payment1));
+    verify(paymentRepository).saveAndFlush(eq(payment2));
   }
 
   @Test
@@ -82,7 +82,7 @@ public class LoanCalculationServiceTest {
 
     // Mocks
     doThrow(new RuntimeException(exceptionMessage)).when(loanCalculationRepository)
-        .save(eq(loanCalculation));
+        .saveAndFlush(eq(loanCalculation));
 
     // Action
     final Exception exception = assertThrows(RuntimeException.class,
@@ -90,8 +90,8 @@ public class LoanCalculationServiceTest {
 
     // Assertion
     assertEquals(exceptionMessage, exception.getMessage());
-    verify(loanCalculationRepository).save(eq(loanCalculation));
-    verify(paymentRepository, never()).save(any(Payment.class));
+    verify(loanCalculationRepository).saveAndFlush(eq(loanCalculation));
+    verify(paymentRepository, never()).saveAndFlush(any(Payment.class));
   }
 
   private Payment createPayment(int paymentOrder, double paymentAmount,

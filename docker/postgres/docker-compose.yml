@@ -1,0 +1,37 @@
+version: '3.8'
+
+volumes:
+  postgres:
+
+services:
+  loan-calculator:
+    image: 'loan-calculator:latest'
+    container_name: loan-calculator
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    depends_on:
+      - postgres
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/calculator
+      - DB_USERNAME=loan-calculator-postgres-user
+      - DB_PASSWORD=loan-calculator-postgres-password
+      - FLYWAY_LOCATIONS=classpath:postgresql/db/migration
+      - SCHEMA_NAME=calculator
+      - SPRING_FLYWAY_SCHEMAS=calculator
+
+  postgres:
+    image: 'postgres:11-alpine'
+    container_name: postgres
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_DB=calculator
+      - POSTGRES_USER=loan-calculator-postgres-user
+      - POSTGRES_PASSWORD=loan-calculator-postgres-password
+      - PGDATA=/data/postgres
+    volumes:
+      - postgres:/data/postgres

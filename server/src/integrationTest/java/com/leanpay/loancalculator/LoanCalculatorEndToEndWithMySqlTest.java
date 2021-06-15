@@ -32,13 +32,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 
 @Slf4j
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Tag("integration")
+@TestPropertySource(properties = "spring.jpa.properties.hibernate.default_schema=calculator")
 public class LoanCalculatorEndToEndWithMySqlTest {
+
+  private final static String SCHEMA_NAME = "calculator";
 
   private static MySQLContainer<?> mySql;
 
@@ -52,7 +56,9 @@ public class LoanCalculatorEndToEndWithMySqlTest {
   public static void setup() {
 
     // setup database
-    mySql = new MySQLContainer<>("mysql:8.0").withLogConsumer(new Slf4jLogConsumer(log));
+    mySql = new MySQLContainer<>("mysql:8.0")
+        .withDatabaseName(SCHEMA_NAME)
+        .withLogConsumer(new Slf4jLogConsumer(log));
     mySql.start();
     createSchema();
   }
@@ -76,7 +82,9 @@ public class LoanCalculatorEndToEndWithMySqlTest {
 
   private static void createSchema() {
     final Flyway flyway = Flyway.configure()
-        .dataSource(mySql.getJdbcUrl(), mySql.getUsername(), mySql.getPassword()).load();
+        .dataSource(mySql.getJdbcUrl(), mySql.getUsername(), mySql.getPassword())
+        .schemas(SCHEMA_NAME)
+        .load();
     flyway.migrate();
   }
 

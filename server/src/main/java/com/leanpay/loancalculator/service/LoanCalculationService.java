@@ -23,7 +23,7 @@ public class LoanCalculationService {
 
   @Transactional
   public void saveLoanCalculation(@NotNull LoanCalculation loanCalculation) {
-    loanCalculationRepository.save(loanCalculation);
-    loanCalculation.getPayments().forEach(paymentRepository::save);
+    loanCalculationRepository.saveAndFlush(loanCalculation);
+    loanCalculation.getPayments().forEach(paymentRepository::saveAndFlush);
   }
 }

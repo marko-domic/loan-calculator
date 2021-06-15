@@ -13,6 +13,7 @@ spring:
         jdbc.time_zone: UTC
         connection:
           provider_disables_autocommit: true
+        default_schema: ${SCHEMA_NAME:PUBLIC}
     hibernate:
       ddl-auto: validate
     open-in-view: false

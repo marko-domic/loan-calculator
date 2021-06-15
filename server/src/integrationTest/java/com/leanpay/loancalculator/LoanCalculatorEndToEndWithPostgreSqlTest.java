@@ -39,8 +39,13 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 @Slf4j
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Tag("integration")
-@TestPropertySource(properties = {"spring.flyway.locations=classpath:postgresql/db/migration"})
+@TestPropertySource(properties = {
+    "spring.flyway.locations=classpath:postgresql/db/migration",
+    "spring.jpa.properties.hibernate.default_schema=calculator"
+})
 public class LoanCalculatorEndToEndWithPostgreSqlTest {
+
+  private final static String SCHEMA_NAME = "calculator";
 
   private static PostgreSQLContainer<?> postgreSql;
 
@@ -55,7 +60,8 @@ public class LoanCalculatorEndToEndWithPostgreSqlTest {
 
     // setup database
     postgreSql = new PostgreSQLContainer<>("postgres:11")
-        .withLogConsumer(new Slf4jLogConsumer(log));
+        .withLogConsumer(new Slf4jLogConsumer(log))
+        .withDatabaseName(SCHEMA_NAME);
     postgreSql.start();
     createSchema();
   }
@@ -80,6 +86,7 @@ public class LoanCalculatorEndToEndWithPostgreSqlTest {
   private static void createSchema() {
     final Flyway flyway = Flyway.configure()
         .dataSource(postgreSql.getJdbcUrl(), postgreSql.getUsername(), postgreSql.getPassword())
+        .schemas(SCHEMA_NAME)
         .locations("postgresql/db/migration")
         .load();
     flyway.migrate();
