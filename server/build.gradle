@@ -39,11 +39,14 @@ dependencies {
 	implementation 'com.h2database:h2:1.4.200'
 	implementation 'org.flywaydb:flyway-core:7.7.3'
 	implementation 'mysql:mysql-connector-java:8.0.25'
+	implementation 'org.postgresql:postgresql:42.2.21'
+
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
 	integrationTestImplementation 'org.testcontainers:mysql:1.15.3'
+	integrationTestImplementation 'org.testcontainers:postgresql:1.15.3'
 }
 
 test {
