@@ -4,6 +4,88 @@ This amortization schedule calculator creates a payment schedule for a loan with
 for the life of a loan. The amortization table shows how each payment is applied to the principal 
 balance and the interest owed.
 
+## Running the application locally
+
+There are several ways to start a service on your local machine.
+
+For a quick start, it could be done by running either of these 2 scripts:
+
+```shell
+./start-loan-calculator-with-mysql.sh
+```
+or
+```shell
+./start-loan-calculator-with-postgres.sh
+```
+
+In both scenarios, they will build fresh new docker image of loan calculator application and run it 
+with corresponding database. The only difference is which database will be used, MySQL or PostgreSql.
+
+Starting a service could also be done by executing the `main` method in the
+`com.leanpay.loancalculator.LoanCalculatorApplication` class from IDE or running Gradle plugin
+command:
+
+```shell
+./gradlew bootRun
+```
+
+In this case, H2 in-memory database will be used.
+
+## Installation and Build
+
+### Project download
+
+Downloading Loan Calculator Spring Boot project on local machine can be done by executing command:
+
+```shell
+git clone https://github.com/marko-domic/loan-calculator.git
+```
+
+### Project build
+
+Whole project was developed by [Gradle build tool](https://gradle.org/). Building and testing it is
+done with the help of the same tool, by executing command:
+
+```shell
+./gradlew clean build
+```
+
+This command will trigger project build, all unit and integration tests of the project, which are required steps in building phase.
+
+### Database setup
+
+By default, Loan Calculator uses embedded
+[H2 in-memory database](https://www.h2database.com/html/main.html). Changing it could be done in 2 ways:
+
+1. By defining `DB_URL` environment variable
+2. By setting `spring.datasource.url` spring configuration
+
+Similar, DB user credentials can be set also in 2 ways:
+
+1. By defining `DB_USERNAME` and `DB_PASSWORD` environment variables
+2. By setting `spring.datasource.username` and `spring.datasource.password` spring configurations
+
+Service is relying on relational databases only, which can be:
+
+* [H2 in-memory database](https://www.h2database.com/html/main.html)
+* [PostgreSQL](https://www.postgresql.org/)
+* [MySQL](https://www.mysql.com/)
+
+If PostgreSQL database is used, it is required to set another property for Flyway database
+migrations, because of its different SQL syntax. It could be done in one of these 2 ways:
+
+1. By setting `FLYWAY_LOCATIONS` environment variable to `classpath:postgresql/db/migration`
+   (`FLYWAY_LOCATIONS=classpath:postgresql/db/migration`)
+2. By setting `spring.flyway.locations` spring configuration to `classpath:postgresql/db/migration`
+
+### Build Docker image
+
+Creating Docker image of a service can be done by executing command:
+
+```shell
+./gradlew bootBuildImage --imageName=loan-calculator
+```
+
 ## Technology Stack
 
 ### Data
@@ -39,70 +121,3 @@ balance and the interest owed.
 * [git](https://git-scm.com/) - Free and Open-Source distributed version control system.
 * [Docker](https://www.docker.com/) - A set of platform as a service products that use OS-level 
   virtualization to deliver software in packages called containers.
-
-## Installation, Build and Run
-
-### Project download
-
-Downloading Loan Calculator Spring Boot project on local machine can be done by executing command:
-
-```shell
-git clone https://github.com/marko-domic/loan-calculator.git
-```
-
-### Project build
-
-Whole project was developed by [Gradle build tool](https://gradle.org/). Building and testing it is 
-done with the help of the same tool, by executing command:
-
-```shell
-./gradlew clean build
-```
-
-This command will trigger project build, all unit and integration tests of the project, which are required steps in building phase.
-
-### Database setup
-
-By default, Loan Calculator uses embedded
-[H2 in-memory database](https://www.h2database.com/html/main.html). Changing it could be done in 2 ways:
-
-1. By defining `DB_URL` environment variable
-2. By setting `spring.datasource.url` spring configuration
-
-Similar, DB user credentials can be set also in 2 ways:
-
-1. By defining `DB_USERNAME` and `DB_PASSWORD` environment variables
-2. By setting `spring.datasource.username` and `spring.datasource.password` spring configurations
-
-Service is relying on relational databases only, which can be:
-
-* [H2 in-memory database](https://www.h2database.com/html/main.html)
-* [PostgreSQL](https://www.postgresql.org/)
-* [MySQL](https://www.mysql.com/)
-
-If PostgreSQL database is used, it is required to set another property for Flyway database 
-migrations, because of its different SQL syntax. It could be done in one of these 2 ways:
-
-1. By setting `FLYWAY_LOCATIONS` environment variable to `classpath:postgresql/db/migration` 
-   (`FLYWAY_LOCATIONS=classpath:postgresql/db/migration`)
-2. By setting `spring.flyway.locations` spring configuration to `classpath:postgresql/db/migration`
-
-### Build Docker image
-
-Creating Docker image of a service can be done by executing command:
-
-```shell
-./gradlew bootBuildImage --imageName=loan-calculator
-```
-
-### Running the application locally
-
-There are several ways to start a service on your local machine.
-
-Starting a service could be done by executing the `main` method in the 
-`com.leanpay.loancalculator.LoanCalculatorApplication` class from IDE or running Gradle plugin 
-command:
-
-```shell
-./gradlew bootRun
-```
