@@ -5,6 +5,7 @@ import com.leanpay.loancalculator.dto.LoanCalculationInputDto;
 import com.leanpay.loancalculator.dto.PaymentDto;
 import com.leanpay.loancalculator.model.LoanCalculation;
 import com.leanpay.loancalculator.model.Payment;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +23,7 @@ public class LoanCalculationConverter {
         .annualInterestPercent(loanCalculationInput.getAnnualInterestPercent().doubleValue())
         .numberOfMonths(loanCalculationInput.getNumberOfMonths())
         .monthlyPayment(amortizationScheduleCalculation.getMonthlyPayment().doubleValue())
+        .createdDate(Instant.now())
         .totalInterestPaid(amortizationScheduleCalculation.getTotalInterestPaid().doubleValue())
         .build();
     loanCalculation.setPayments(

@@ -1,5 +1,6 @@
 package com.leanpay.loancalculator.model;
 
+import java.time.Instant;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Data
@@ -40,6 +42,9 @@ public class LoanCalculation {
 
   @NotNull
   private Double totalInterestPaid;
+
+  @CreatedDate
+  private Instant createdDate;
 
   @NotNull
   @OneToMany(mappedBy = "calculation")
