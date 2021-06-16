@@ -4,6 +4,10 @@ This amortization schedule calculator creates a payment schedule for a loan with
 for the life of a loan. The amortization table shows how each payment is applied to the principal 
 balance and the interest owed.
 
+## UML Sequence Diagram
+
+![UML Sequence Diagram preview](resources/calculator-sequence-diagram.png)
+
 ## API
 
 The REST API to the loan calculator app can be described in these 2 requests:
